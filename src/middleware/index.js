@@ -1,4 +1,6 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../user/model");
 
 exports.hashPass = async (req, res, next) => {
     try {
@@ -6,6 +8,45 @@ exports.hashPass = async (req, res, next) => {
         next();
     } catch (error) {
         console.log(error);
-        res.send({ err: error });
+        res.status(500).send({ err: error });
     }
 };
+
+exports.comparePasswords = async (req, res, next) => {
+    try {
+    //   const user = await User.findOne({ email: req.body.email });
+    //   const comparisonBool = await bcrypt.compare(req.body.password, user.password);
+    //   if (comparisonBool) {
+    //     req.user = user;
+    //     next();
+    //   } else {
+    //     throw new Error();
+    //   }
+    console.log("This is compare passwords")
+      req.user = await User.findOne({username: req.body.username});
+      if(req.user && (await bcrypt.compare(req.body.password, req.user.password))) {
+        next();
+     } else {
+        throw new Error({ msg: "Incorrect credentials" })
+     }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ err: error });
+    }
+  }; //compare password works
+  
+  exports.tokenAuth = async (req, res, next) => {
+    try {
+        console.log("This is tokenCheck");
+        const token = req.header("Authorization");
+        const decodedToken = await jwt.verify(token, process.env.SECRET)
+    //   const noBearerToken = token.replace("Bearer ", "");
+    //   const tokenObj = jwt.verify(noBearerToken, process.env.SECRET);
+        const user = await User.findById(decodedToken._id);
+        req.user = user;
+        next();
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ err: error });
+    }
+  };
