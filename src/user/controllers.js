@@ -12,7 +12,7 @@ exports.createUser = async (req, res) => {
         console.log(error)
         res.status(500).send({ err: error });
     }
-}; //create user works
+}; //create user works. /user with post in TC
 
 exports.login = async (req, res) => {
     try {
@@ -23,8 +23,9 @@ exports.login = async (req, res) => {
         console.log(error);
         res.status(500).send({ err: error });
     }
-}; //token check works
+}; //token auth works. /login get, using authorization in header.
 
+//Mongoose read, update & delete
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find({});
@@ -38,18 +39,22 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-//   exports.updateEmail = async (req, res) => {
-//     try {
-//       const newEmail = await User.findOneAndUpdate(
-//         { username: req.body.username },
-//         { $set: { email: req.body.email } }
-//       );
-//       res.status(200).send({ message: "Specified User Email Updated" });
-//     } catch (error) {
-//       console.log(error);
-//       res.status(500).send({ message: "Check server logs" });
-//     }
-//   };
+exports.updateEmail = async (req, res) => {
+    try {
+        const newEmail = await User.findOneAndUpdate(
+        { username: req.body.username },
+        { $set: { email: req.body.email } }
+        );
+        res.status(200).send({ message: "Email Updated" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ err: error });
+    }
+}; //update email work in TC, patch
+//   {
+//     "username" : "enter user name",
+//     "email" : "enter new email address"
+//   }
   
 //   exports.deleteUser = async (req, res) => {
 //     try {
