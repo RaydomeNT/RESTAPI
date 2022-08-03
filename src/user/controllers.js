@@ -16,14 +16,14 @@ exports.createUser = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const token = await jwt.sign({_id: req.user._id}, process.env.SECRET); //creaes token with user id inside
+        const token = await jwt.sign({_id: req.user._id}, process.env.SECRET); //creates token with user id inside
         //generate token using newUser_ID      
         res.status(200).send({ user: req.user, token }); 
     } catch (error) {
         console.log(error);
         res.status(500).send({ err: error });
     }
-}; //token auth works. /login get, using authorization in header.
+}; //token auth works. 
 
 //Mongoose read, update & delete
 exports.getAllUsers = async (req, res) => {
@@ -37,7 +37,7 @@ exports.getAllUsers = async (req, res) => {
         console.log(error);
         res.status(500).send({ err: error });
     }
-};
+}; //works in TC. use get & /list, no code needed in body, returns list of usernames.
 
 exports.updateEmail = async (req, res) => {
     try {
@@ -50,19 +50,18 @@ exports.updateEmail = async (req, res) => {
         console.log(error);
         res.status(500).send({ err: error });
     }
-}; //update email work in TC, patch
+}; //update email works in TC, patch
 //   {
 //     "username" : "enter user name",
 //     "email" : "enter new email address"
 //   }
   
-//   exports.deleteUser = async (req, res) => {
-//     try {
-//       await User.findOneAndDelete({ username: req.body.username });
-//       res
-//         .status(200)
-//         .send({ message: "Specified User Deleted from the DataBase" });
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
+exports.deleteUser = async (req, res) => {
+    try {
+        await User.findOneAndDelete({ username: req.body.username });
+        res.status(200).send({ message: "User Deleted" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ err: error });
+    }
+}; //delete user works in TC. Delete /delete "username":"enter the username to be deleted"
